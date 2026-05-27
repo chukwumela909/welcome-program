@@ -32,9 +32,15 @@ export function RegistrationsTable({ rows }: { rows: RegistrationRow[] }) {
           />
           <a
             href="/dashboard-admin/export"
-            className="rounded-md bg-brand-gradient px-4 py-2 text-sm font-medium text-white"
+            className="rounded-md border border-border bg-surface-strong px-4 py-2 text-sm font-medium"
           >
             Download CSV
+          </a>
+          <a
+            href="/dashboard-admin/export-pdf"
+            className="rounded-md bg-brand-gradient px-4 py-2 text-sm font-medium text-white"
+          >
+            Download PDF
           </a>
         </div>
       </div>
