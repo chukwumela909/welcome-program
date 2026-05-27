@@ -1,7 +1,6 @@
 "use server";
 
-import { promises as fs } from "node:fs";
-import path from "node:path";
+import { insertRegistration } from "@/lib/db";
 
 export type RegistrationState =
   | { status: "idle" }
@@ -35,24 +34,16 @@ export async function registerForEvent(
     ? Math.min(Math.max(Math.round(attendingRaw), 1), 50)
     : 1;
 
-  const record = {
-    fullName,
-    email,
-    phone,
-    country,
-    church,
-    attending,
-    receivedAt: new Date().toISOString(),
-  };
-
   try {
-    const dir = path.join(process.cwd(), "data");
-    await fs.mkdir(dir, { recursive: true });
-    await fs.appendFile(
-      path.join(dir, "registrations.jsonl"),
-      JSON.stringify(record) + "\n",
-      "utf8",
-    );
+    insertRegistration({
+      fullName,
+      email,
+      phone,
+      country,
+      church,
+      attending,
+      receivedAt: new Date().toISOString(),
+    });
   } catch {
     return {
       status: "error",
