@@ -11,11 +11,18 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const totals = getTotals();
+  const byParticipation = getBreakdown("participation");
   const byCountry = getBreakdown("country");
   const byChurch = getBreakdown("church");
   const rows = getAllRegistrations();
 
-  const buffer = await renderPdf({ totals, byCountry, byChurch, rows });
+  const buffer = await renderPdf({
+    totals,
+    byParticipation,
+    byCountry,
+    byChurch,
+    rows,
+  });
 
   return new Response(new Uint8Array(buffer), {
     headers: {
@@ -28,6 +35,7 @@ export async function GET() {
 
 function renderPdf(args: {
   totals: { count: number; attendees: number };
+  byParticipation: BreakdownRow[];
   byCountry: BreakdownRow[];
   byChurch: BreakdownRow[];
   rows: RegistrationRow[];
@@ -63,6 +71,7 @@ function renderPdf(args: {
       .text(`Total attendees:     ${args.totals.attendees}`)
       .moveDown(1);
 
+    renderBreakdown(doc, "By participation", args.byParticipation);
     renderBreakdown(doc, "By country", args.byCountry);
     renderBreakdown(doc, "By church", args.byChurch);
 
@@ -93,8 +102,16 @@ function renderBreakdown(
 }
 
 function renderTable(doc: PDFKit.PDFDocument, rows: RegistrationRow[]): void {
-  const headers = ["When", "Name", "Email", "Country", "Church", "Att."];
-  const colWidths = [85, 100, 130, 75, 85, 30];
+  const headers = [
+    "When",
+    "Name",
+    "Email",
+    "Country",
+    "Church",
+    "Mode",
+    "Att.",
+  ];
+  const colWidths = [80, 90, 115, 65, 75, 45, 25];
   const startX = doc.page.margins.left;
   const usableWidth = doc.page.width - doc.page.margins.left - doc.page.margins.right;
 
@@ -133,6 +150,7 @@ function renderTable(doc: PDFKit.PDFDocument, rows: RegistrationRow[]): void {
       r.email,
       r.country,
       r.church,
+      r.participation,
       String(r.attending),
     ];
     const rowHeights = cells.map((c, i) =>

@@ -14,6 +14,7 @@ export default function DashboardAdminPage() {
   const totals = getTotals();
   const byCountry = getBreakdown("country");
   const byChurch = getBreakdown("church");
+  const byParticipation = getBreakdown("participation");
   const daily = getDailyCounts();
   const all = getAllRegistrations();
 
@@ -24,7 +25,8 @@ export default function DashboardAdminPage() {
         <KpiCard label="Total attendees" value={totals.attendees} />
       </section>
 
-      <section className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+      <section className="grid grid-cols-1 gap-4 lg:grid-cols-3">
+        <BreakdownPanel title="By participation" rows={byParticipation} />
         <BreakdownPanel title="By country" rows={byCountry} />
         <BreakdownPanel title="By church" rows={byChurch} />
       </section>

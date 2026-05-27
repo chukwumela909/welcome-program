@@ -24,6 +24,9 @@ const COUNTRIES = [
 export function RegistrationForm() {
   const [state, formAction] = useActionState(registerForEvent, INITIAL);
   const [attending, setAttending] = useState(1);
+  const [participation, setParticipation] = useState<"on-site" | "online">(
+    "on-site",
+  );
 
   if (state.status === "success") {
     return (
@@ -73,6 +76,8 @@ export function RegistrationForm() {
           required
         />
       </div>
+
+      <ParticipationToggle value={participation} onChange={setParticipation} />
 
       <Stepper value={attending} onChange={setAttending} />
 
@@ -178,6 +183,65 @@ function SelectField({
         >
           <path d="m6 9 6 6 6-6" />
         </svg>
+      </div>
+    </div>
+  );
+}
+
+function ParticipationToggle({
+  value,
+  onChange,
+}: {
+  value: "on-site" | "online";
+  onChange: (v: "on-site" | "online") => void;
+}) {
+  const options: Array<{
+    value: "on-site" | "online";
+    label: string;
+    hint: string;
+  }> = [
+    { value: "on-site", label: "On-site", hint: "Join us at the stadium" },
+    { value: "online", label: "Online", hint: "Stream the service live" },
+  ];
+  return (
+    <div className="flex flex-col gap-1.5">
+      <span className="text-xs font-semibold uppercase tracking-[0.12em] text-foreground/70">
+        How will you participate?
+        <span className="ml-1 text-brand-400">*</span>
+      </span>
+      <input type="hidden" name="participation" value={value} />
+      <div
+        role="radiogroup"
+        aria-label="Participation method"
+        className="grid grid-cols-2 gap-3"
+      >
+        {options.map((opt) => {
+          const selected = value === opt.value;
+          return (
+            <button
+              key={opt.value}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(opt.value)}
+              className={
+                "flex flex-col items-start gap-0.5 rounded-xl border px-4 py-3 text-left transition focus:outline-none focus:ring-2 focus:ring-brand-500/30 " +
+                (selected
+                  ? "border-brand-400 bg-brand-gradient text-white shadow-[0_10px_30px_-12px_rgba(20,71,230,0.7)]"
+                  : "border-border bg-surface-soft text-foreground hover:border-border-strong hover:bg-surface-strong")
+              }
+            >
+              <span className="text-sm font-semibold">{opt.label}</span>
+              <span
+                className={
+                  "text-xs " + (selected ? "text-white/80" : "text-muted")
+                }
+              >
+                {opt.hint}
+              </span>
+            </button>
+          );
+        })}
       </div>
     </div>
   );

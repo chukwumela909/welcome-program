@@ -20,6 +20,7 @@ export async function GET() {
     "phone",
     "country",
     "church",
+    "participation",
     "attending",
   ];
   const lines = [header.join(",")];
@@ -33,6 +34,7 @@ export async function GET() {
         r.phone,
         r.country,
         r.church,
+        r.participation,
         r.attending,
       ]
         .map(csvEscape)

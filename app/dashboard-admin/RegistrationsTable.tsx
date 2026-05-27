@@ -10,9 +10,14 @@ export function RegistrationsTable({ rows }: { rows: RegistrationRow[] }) {
     const q = query.trim().toLowerCase();
     if (!q) return rows;
     return rows.filter((r) =>
-      [r.full_name, r.email, r.country, r.church, r.phone].some((v) =>
-        v.toLowerCase().includes(q),
-      ),
+      [
+        r.full_name,
+        r.email,
+        r.country,
+        r.church,
+        r.phone,
+        r.participation,
+      ].some((v) => v.toLowerCase().includes(q)),
     );
   }, [rows, query]);
 
@@ -55,13 +60,14 @@ export function RegistrationsTable({ rows }: { rows: RegistrationRow[] }) {
               <th className="px-3 py-2">Phone</th>
               <th className="px-3 py-2">Country</th>
               <th className="px-3 py-2">Church</th>
+              <th className="px-3 py-2">Mode</th>
               <th className="px-3 py-2 text-right">Att.</th>
             </tr>
           </thead>
           <tbody>
             {filtered.length === 0 ? (
               <tr>
-                <td colSpan={7} className="px-3 py-6 text-center text-muted">
+                <td colSpan={8} className="px-3 py-6 text-center text-muted">
                   {rows.length === 0
                     ? "No registrations yet."
                     : "No matches for that search."}
@@ -81,6 +87,18 @@ export function RegistrationsTable({ rows }: { rows: RegistrationRow[] }) {
                   <td className="whitespace-nowrap px-3 py-2">{r.phone}</td>
                   <td className="px-3 py-2">{r.country}</td>
                   <td className="px-3 py-2">{r.church}</td>
+                  <td className="px-3 py-2">
+                    <span
+                      className={
+                        "inline-block rounded-full px-2 py-0.5 text-xs " +
+                        (r.participation === "online"
+                          ? "bg-brand-500/15 text-brand-300"
+                          : "bg-surface-strong text-foreground/80")
+                      }
+                    >
+                      {r.participation}
+                    </span>
+                  </td>
                   <td className="px-3 py-2 text-right">{r.attending}</td>
                 </tr>
               ))
